@@ -30,7 +30,7 @@ namespace ClientPCMonitoring
         {
             
             label1.Text = "Start Recording";
-            vc.StartRecording();
+            vc.StartRecording(textBox1.Text.Trim());
             
         }
 
@@ -42,6 +42,7 @@ namespace ClientPCMonitoring
 
         private void button4_Click(object sender, EventArgs e)
         {
+            label4.Text = "Monitoring the traffic, Click 'Stop' to write down the file";
             oAllSessions = new List<Session>();
             string sSAZInfo = "NoSAZ";
             sSAZInfo = Assembly.GetAssembly(typeof(Ionic.Zip.ZipFile)).FullName;
@@ -51,7 +52,7 @@ namespace ClientPCMonitoring
             {
                 oS.bBufferResponse = false;
                 Monitor.Enter(oAllSessions);
-
+                //Filter the localhost access request
                 if (oS.host.Contains("localhost"))
                 {
                     Monitor.Exit(oAllSessions);
@@ -85,7 +86,7 @@ namespace ClientPCMonitoring
 
             if (oAllSessions.Count > 0)
             {
-                SaveSessionsToDesktop(oAllSessions);
+                SaveSessionsToDesktop(oAllSessions,textBox1.Text.Trim());
             }
             else
             {
@@ -103,10 +104,10 @@ namespace ClientPCMonitoring
             MessageBox.Show(s);
         }
 
-        private static void SaveSessionsToDesktop(List<Session> oAllSessions)
+        private static void SaveSessionsToDesktop(List<Session> oAllSessions,string filePath)
         {
             bool bSuccess = false;
-            string sFilename = Path.Combine("C:\\ClientMonitoring", DateTime.Now.ToString("hh-mm-ss") + ".saz");
+            string sFilename = Path.Combine(filePath, DateTime.Now.ToString("hh-mm-ss") + ".saz");
             try
             {
                 try
@@ -127,6 +128,61 @@ namespace ClientPCMonitoring
                 MessageBox.Show("Save failed: " + eX.Message);
                 
             }
+        }
+
+        private void RunPsPing(string filePath)
+        {
+            //Create process
+            System.Diagnostics.Process pProcess = new System.Diagnostics.Process();
+
+            //strCommand is path and file name of command to run
+            pProcess.StartInfo.FileName =Path.Combine(filePath, "psping.exe");
+
+            //strCommandParameters are parameters to pass to program
+            pProcess.StartInfo.Arguments = "-b -l 1500 -n 10 www.sina.com.cn -nobanner";
+
+            pProcess.StartInfo.UseShellExecute = false;
+
+            //Set output of program to be written to process output stream
+            pProcess.StartInfo.RedirectStandardOutput = true;
+
+            //Optional
+            pProcess.StartInfo.WorkingDirectory = filePath;
+
+            //Start the process
+            pProcess.Start();
+
+            //Get program output
+            string strOutput = pProcess.StandardOutput.ReadToEnd();
+
+
+
+            //Wait for process to finish
+            pProcess.WaitForExit();
+
+
+            string path = Path.Combine(filePath, "Pspinglog.txt");
+            if (!File.Exists(path))
+            {
+                FileInfo txtFile=new FileInfo(path);
+                FileStream fs = txtFile.Create();
+                fs.Close();
+            }
+
+            StreamWriter sw = File.AppendText(path);
+            sw.WriteLine(DateTime.Now.ToString());
+            sw.WriteLine(strOutput);
+            sw.Flush();
+            sw.Close();
+
+
+           
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RunPsPing(textBox1.Text.Trim());
         }
     }
 }

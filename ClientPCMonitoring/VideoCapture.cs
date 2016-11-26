@@ -17,13 +17,13 @@ namespace ClientPCMonitoring
     {
         MouseCursor _cursor;
         string _currentFileName=string.Empty;
-        string OutPath = "C:\\ClientMonitoring";
+        
         IRecorder _recorder;
         public Screen captureScreen { get; set; }
-        public void StartRecording()
+        public void StartRecording(string filePath)
         {
             _cursor = new MouseCursor(true);
-            _currentFileName = Path.Combine(OutPath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".avi");
+            _currentFileName = Path.Combine(filePath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".avi");
             var imgProvider = GetImageProvider();
             var videoEncoder = GetVideoFileWriter(imgProvider);
             

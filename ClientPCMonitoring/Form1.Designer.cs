@@ -36,12 +36,17 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.helpProvider1 = new System.Windows.Forms.HelpProvider();
+            this.label5 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(43, 33);
+            this.button2.Location = new System.Drawing.Point(68, 94);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 0;
@@ -52,7 +57,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 79);
+            this.label1.Location = new System.Drawing.Point(68, 140);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 12);
             this.label1.TabIndex = 1;
@@ -60,7 +65,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(167, 33);
+            this.button3.Location = new System.Drawing.Point(192, 94);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 2;
@@ -71,7 +76,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(41, 9);
+            this.label2.Location = new System.Drawing.Point(66, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(35, 12);
             this.label2.TabIndex = 3;
@@ -80,7 +85,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(43, 139);
+            this.label3.Location = new System.Drawing.Point(68, 200);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(47, 12);
             this.label3.TabIndex = 4;
@@ -88,7 +93,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(43, 165);
+            this.button4.Location = new System.Drawing.Point(68, 226);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 5;
@@ -98,7 +103,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(167, 164);
+            this.button5.Location = new System.Drawing.Point(192, 225);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 6;
@@ -109,24 +114,55 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(45, 208);
+            this.label4.Location = new System.Drawing.Point(70, 269);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 7;
             this.label4.Text = "label4";
             // 
-            // richTextBox1
+            // textBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(47, 249);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(562, 217);
-            this.richTextBox1.TabIndex = 8;
-            this.richTextBox1.Text = "";
+            this.textBox1.Location = new System.Drawing.Point(157, 17);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(196, 21);
+            this.textBox1.TabIndex = 8;
+            this.textBox1.Text = "C:\\ClientMonitoring";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(68, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(83, 12);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "FileStorePath";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(72, 344);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "Run";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(70, 326);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 12);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "PsPing";
             // 
             // Form1
             // 
-            this.ClientSize = new System.Drawing.Size(685, 496);
-            this.Controls.Add(this.richTextBox1);
+            this.ClientSize = new System.Drawing.Size(417, 411);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -152,7 +188,12 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.HelpProvider helpProvider1;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label6;
     }
 }
 
