@@ -17,7 +17,7 @@ namespace ClientPCMonitoring
     {
         MouseCursor _cursor;
         string _currentFileName=string.Empty;
-        string OutPath = "C:\\MichelinMonitoring";
+        string OutPath = "C:\\ClientMonitoring";
         IRecorder _recorder;
         public Screen captureScreen { get; set; }
         public void StartRecording()
