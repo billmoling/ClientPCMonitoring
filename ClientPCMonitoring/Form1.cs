@@ -24,11 +24,22 @@ namespace ClientPCMonitoring
             InitializeComponent();
 
         }
-        
+
+        public void DoPrep()
+        {
+            string folderPath = textBox1.Text.Trim();
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            //TODO: Disk Check
+
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
+            DoPrep();
             label1.Text = "Start Recording";
             vc.StartRecording(textBox1.Text.Trim());
             
@@ -36,12 +47,14 @@ namespace ClientPCMonitoring
 
         private void button3_Click(object sender, EventArgs e)
         {
+            DoPrep();
             label1.Text = "Stop Recording";
             vc.StopRecording();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+            DoPrep();
             label4.Text = "Monitoring the traffic, Click 'Stop' to write down the file";
             oAllSessions = new List<Session>();
             string sSAZInfo = "NoSAZ";
@@ -83,7 +96,7 @@ namespace ClientPCMonitoring
 
         private void button5_Click(object sender, EventArgs e)
         {
-
+            DoPrep();
             if (oAllSessions.Count > 0)
             {
                 SaveSessionsToDesktop(oAllSessions,textBox1.Text.Trim());
@@ -182,6 +195,7 @@ namespace ClientPCMonitoring
 
         private void button1_Click(object sender, EventArgs e)
         {
+            DoPrep();
             RunPsPing(textBox1.Text.Trim());
         }
     }
