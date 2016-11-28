@@ -2,6 +2,7 @@
 using Screna.Avi;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace ClientPCMonitoring
             var imgProvider = GetImageProvider();
             var videoEncoder = GetVideoFileWriter(imgProvider);
             
-            _recorder = new Recorder(videoEncoder, imgProvider, 5, null);
+            _recorder = new Recorder(videoEncoder, imgProvider, int.Parse(ConfigurationManager.AppSettings["VideoFrameRate"]), null);
 
 
             _recorder.RecordingStopped += (s, E) =>
@@ -62,11 +63,12 @@ namespace ClientPCMonitoring
 
         IVideoFileWriter GetVideoFileWriter(object imgProvider)
         {
-             
+
             var encoder = AviCodec.MotionJpeg;
-            encoder.Quality = 20;
+            encoder.Quality =int.Parse(ConfigurationManager.AppSettings["VideoQuality"]);
             IVideoFileWriter videoEncoder = new AviWriter(_currentFileName, encoder);
             return videoEncoder;
         }
+
     }
 }

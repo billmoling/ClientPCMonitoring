@@ -33,8 +33,16 @@ namespace ClientPCMonitoring
                 Directory.CreateDirectory(folderPath);
             }
 
-            //TODO: Disk Check
-
+            DriveInfo drive = new DriveInfo("C");
+            if (drive.IsReady)
+            {
+                long expectSpace = (long)10 * 1024 * 1024 * 1024;
+                long freeSpace=drive.AvailableFreeSpace;
+                if (freeSpace < expectSpace)
+                {
+                    MessageBox.Show("Disk is not enough");
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
