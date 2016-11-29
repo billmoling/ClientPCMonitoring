@@ -2,15 +2,10 @@
 using Fiddler;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace ClientPCMonitoring
@@ -19,6 +14,7 @@ namespace ClientPCMonitoring
     {
         public VideoCapture vc = new VideoCapture();
         public List<Session> oAllSessions = new List<Session>();
+        System.Windows.Forms.Timer _timer = new System.Windows.Forms.Timer();
         public Form1()
         {
             InitializeComponent();
@@ -62,6 +58,11 @@ namespace ClientPCMonitoring
 
         private void button4_Click(object sender, EventArgs e)
         {
+            StartFiddlerCapturing();
+        }
+
+        private void StartFiddlerCapturing()
+        {
             DoPrep();
             label4.Text = "Monitoring the traffic, Click 'Stop' to write down the file";
             oAllSessions = new List<Session>();
@@ -104,10 +105,15 @@ namespace ClientPCMonitoring
 
         private void button5_Click(object sender, EventArgs e)
         {
+            FinishFiddlerCapturing();
+        }
+
+        private void FinishFiddlerCapturing()
+        {
             DoPrep();
             if (oAllSessions.Count > 0)
             {
-                SaveSessionsToDesktop(oAllSessions,textBox1.Text.Trim());
+                SaveSessionsToDesktop(oAllSessions, textBox1.Text.Trim());
             }
             else
             {
@@ -153,6 +159,9 @@ namespace ClientPCMonitoring
 
         private void RunPsPing(string filePath)
         {
+            CheckPsPingFile();
+
+
             //Create process
             System.Diagnostics.Process pProcess = new System.Diagnostics.Process();
 
@@ -170,13 +179,14 @@ namespace ClientPCMonitoring
             //Optional
             pProcess.StartInfo.WorkingDirectory = filePath;
 
+
             //Start the process
             pProcess.Start();
 
             //Get program output
             string strOutput = pProcess.StandardOutput.ReadToEnd();
 
-
+            
 
             //Wait for process to finish
             pProcess.WaitForExit();
@@ -201,10 +211,86 @@ namespace ClientPCMonitoring
 
         }
 
+        private void CheckPsPingFile()
+        {
+
+            string pspingPath = Path.Combine(textBox1.Text.Trim(), "psping.exe");
+            if (!File.Exists(pspingPath))
+            {
+                File.Copy(@".\psping.exe", pspingPath);
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             DoPrep();
             RunPsPing(textBox1.Text.Trim());
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //strat to tick every 30 minutes.
+
+
+            _timer.Interval = 30 * 60 * 1000;
+            _timer.Tick += new EventHandler(timer_Tick);
+            _timer.Enabled = true;
+
+            vc.StartRecording(textBox1.Text.Trim());
+            StartFiddlerCapturing();
+
+            RunPsPing(textBox1.Text.Trim());
+
+
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            //Check if any Capture is working
+            //End the existing
+
+            DoPrep();
+            label1.Text = "Start Recording";
+
+            if (vc.GetRecorderState().Equals(Screna.RecorderState.Recording))
+            {
+                vc.StopRecording();
+            }
+
+            if (FiddlerApplication.IsStarted())
+            {
+                FinishFiddlerCapturing();
+            }
+            
+           
+            //Start all the capture function.
+
+            vc.StartRecording(textBox1.Text.Trim());
+            StartFiddlerCapturing();
+
+            RunPsPing(textBox1.Text.Trim());
+
+
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            //End all the capture function
+            vc.StopRecording();
+            FinishFiddlerCapturing();
+
+            _timer.Stop();
+            _timer.Tick -= timer_Tick;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+            vc.StopRecording();
+            FinishFiddlerCapturing();
+            _timer.Stop();
+            _timer.Tick -= timer_Tick;
         }
     }
 }

@@ -1,14 +1,9 @@
 ﻿using Screna;
 using Screna.Avi;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Timer = System.Timers.Timer;
 
 
 
@@ -21,6 +16,17 @@ namespace ClientPCMonitoring
         
         IRecorder _recorder;
         public Screen captureScreen { get; set; }
+
+        public RecorderState GetRecorderState()
+        {
+            if (_recorder!=null)
+            {
+                return _recorder.State;
+            }
+
+            return RecorderState.Ready;
+        }
+
         public void StartRecording(string filePath)
         {
             _cursor = new MouseCursor(true);
@@ -30,6 +36,8 @@ namespace ClientPCMonitoring
             
             _recorder = new Recorder(videoEncoder, imgProvider, int.Parse(ConfigurationManager.AppSettings["VideoFrameRate"]), null);
 
+
+            
 
             _recorder.RecordingStopped += (s, E) =>
               {
