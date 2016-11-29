@@ -1,5 +1,6 @@
 ﻿
 using Fiddler;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -160,7 +161,7 @@ namespace ClientPCMonitoring
 
         private void RunPsPing(string filePath)
         {
-            CheckPsPingFile();
+            CheckPsPingProgram();
 
 
             //Create process
@@ -212,7 +213,7 @@ namespace ClientPCMonitoring
 
         }
 
-        private void CheckPsPingFile()
+        private void CheckPsPingProgram()
         {
 
             string pspingPath = Path.Combine(textBox1.Text.Trim(), "psping.exe");
@@ -236,7 +237,8 @@ namespace ClientPCMonitoring
             _timer.Interval = 30 * 60 * 1000;
             _timer.Tick += new EventHandler(timer_Tick);
             _timer.Enabled = true;
-
+            
+            //first time run
             vc.StartRecording(textBox1.Text.Trim());
             StartFiddlerCapturing();
 
@@ -251,7 +253,7 @@ namespace ClientPCMonitoring
             //End the existing
 
             DoPrep();
-            label1.Text = "Start Recording";
+           
 
             if (vc.GetRecorderState().Equals(Screna.RecorderState.Recording))
             {
@@ -287,11 +289,47 @@ namespace ClientPCMonitoring
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            vc.StopRecording();
-            FinishFiddlerCapturing();
             _timer.Stop();
             _timer.Tick -= timer_Tick;
+        }
+
+        void InstalledApplication()
+        {
+            string path = FolderFileUtil.GetFullFilePath(textBox1.Text.Trim()) + "-InstalledApplication.txt";
+            if (!File.Exists(path))
+            {
+                FileInfo txtFile = new FileInfo(path);
+                FileStream fs = txtFile.Create();
+                fs.Close();
+            }
+
+            StreamWriter sw = File.AppendText(path);
+            sw.WriteLine(DateTime.Now.ToString());
+
+            string registry_key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+            using (Microsoft.Win32.RegistryKey key = Registry.LocalMachine.OpenSubKey(registry_key))
+            {
+                foreach (string subkey_name in key.GetSubKeyNames())
+                {
+                    using (RegistryKey subkey = key.OpenSubKey(subkey_name))
+                    {
+                        string displayName = subkey.GetValue("DisplayName")?.ToString()??"";
+                        string displayVersion = subkey.GetValue("DisplayVersion")?.ToString()??"";
+                        string installDate = subkey.GetValue("InstallDate")?.ToString() ?? "";
+                        sw.WriteLine(string.Format("{0},{1},{2}", displayName,displayVersion,installDate));
+                        
+
+                        
+                    }
+                }
+            }
+            sw.Flush();
+            sw.Close();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            InstalledApplication();
         }
     }
 }
