@@ -30,7 +30,7 @@ namespace ClientPCMonitoring
         public void StartRecording(string filePath)
         {
             _cursor = new MouseCursor(true);
-            _currentFileName = Path.Combine(filePath, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".avi");
+            _currentFileName = FolderFileUtil.GetFullFilePath(filePath) + ".avi";
             var imgProvider = GetImageProvider();
             var videoEncoder = GetVideoFileWriter(imgProvider);
             

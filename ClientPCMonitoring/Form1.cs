@@ -128,13 +128,14 @@ namespace ClientPCMonitoring
 
         public static void WriteCommandResponse(string s)
         {
-            MessageBox.Show(s);
+
+            //MessageBox.Show(s);
         }
 
         private static void SaveSessionsToDesktop(List<Session> oAllSessions,string filePath)
         {
             bool bSuccess = false;
-            string sFilename = Path.Combine(filePath, DateTime.Now.ToString("hh-mm-ss") + ".saz");
+            string sFilename =FolderFileUtil.GetFullFilePath(filePath) + ".saz";
             try
             {
                 try
@@ -192,7 +193,7 @@ namespace ClientPCMonitoring
             pProcess.WaitForExit();
 
 
-            string path = Path.Combine(filePath, "Pspinglog.txt");
+            string path =FolderFileUtil.GetFullFilePath(filePath)+"-Pspinglog.txt";
             if (!File.Exists(path))
             {
                 FileInfo txtFile=new FileInfo(path);
